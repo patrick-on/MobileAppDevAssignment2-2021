@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">MusicApp</string>
+    <string name="button_addSong">Add Song</string>
+    <string name="hint_songTitle">Song Title</string>
+    <string name="hint_songArtist">Artist </string>
 </resources>
