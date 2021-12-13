@@ -32,7 +32,7 @@ class SongListActivity : AppCompatActivity(), SongListener {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = SongAdapter(app.songs.findAll(),this)
+        loadSongs()
 
         registerRefreshCallback()
     }
@@ -61,6 +61,16 @@ class SongListActivity : AppCompatActivity(), SongListener {
     private fun registerRefreshCallback() {
         refreshIntentLauncher =
             registerForActivityResult(ActivityResultContracts.StartActivityForResult())
-            { binding.recyclerView.adapter?.notifyDataSetChanged() }
+            { loadSongs() }
     }
+
+    private fun loadSongs() {
+        showSongs(app.songs.findAll())
+    }
+
+    fun showSongs (songs: List<SongModel>) {
+        binding.recyclerView.adapter = SongAdapter(songs, this)
+        binding.recyclerView.adapter?.notifyDataSetChanged()
+    }
+
 }

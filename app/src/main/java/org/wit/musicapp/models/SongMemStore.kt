@@ -35,6 +35,10 @@ class SongMemStore : SongStore {
         }
     }
 
+    override fun delete(song: SongModel) {
+        songs.remove(song)
+    }
+
     private fun logAll() {
         songs.forEach { i("$it") }
     }
