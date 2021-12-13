@@ -3,6 +3,7 @@ package org.wit.musicapp.adapters
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.squareup.picasso.Picasso
 import org.wit.musicapp.databinding.CardSongBinding
 import org.wit.musicapp.models.SongModel
 
@@ -35,7 +36,8 @@ private val listener: SongListener) :
         fun bind(song: SongModel, listener: SongListener) {
             binding.songTitle.text = song.title
             binding.artist.text = song.artist
-            binding.root.setOnClickListener { listener.onSongClick(song)}
+            Picasso.get().load(song.image).resize(200,200).into(binding.imageIcon)
+            binding.root.setOnClickListener { listener.onSongClick(song) }
         }
     }
 }

@@ -27,6 +27,7 @@ class SongMemStore : SongStore {
         if (foundSong != null) {
             foundSong.title = song.title
             foundSong.artist = song.artist
+            foundSong.image = song.image
             logAll()
         }
     }

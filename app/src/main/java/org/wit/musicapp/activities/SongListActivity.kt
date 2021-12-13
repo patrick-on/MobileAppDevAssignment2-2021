@@ -5,6 +5,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.wit.musicapp.R
 import org.wit.musicapp.adapters.SongAdapter
@@ -17,6 +19,7 @@ class SongListActivity : AppCompatActivity(), SongListener {
 
     lateinit var app: MainApp
     private lateinit var binding: ActivitySongListBinding
+    private lateinit var refreshIntentLauncher : ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -29,8 +32,9 @@ class SongListActivity : AppCompatActivity(), SongListener {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-    //    binding.recyclerView.adapter = SongAdapter(app.songs)
         binding.recyclerView.adapter = SongAdapter(app.songs.findAll(),this)
+
+        registerRefreshCallback()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -42,7 +46,7 @@ class SongListActivity : AppCompatActivity(), SongListener {
         when (item.itemId) {
             R.id.item_add -> {
                 val launcherIntent = Intent(this, SongActivity::class.java)
-                startActivityForResult(launcherIntent,0)
+                refreshIntentLauncher.launch(launcherIntent)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -51,7 +55,12 @@ class SongListActivity : AppCompatActivity(), SongListener {
     override fun onSongClick(song: SongModel) {
         val launcherIntent = Intent(this, SongActivity::class.java)
         launcherIntent.putExtra("song_edit", song)
-        startActivityForResult(launcherIntent,0)
+        refreshIntentLauncher.launch(launcherIntent)
     }
 
+    private fun registerRefreshCallback() {
+        refreshIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { binding.recyclerView.adapter?.notifyDataSetChanged() }
+    }
 }
