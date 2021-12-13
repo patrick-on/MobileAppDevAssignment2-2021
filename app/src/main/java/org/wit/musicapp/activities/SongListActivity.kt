@@ -8,10 +8,12 @@ import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import org.wit.musicapp.R
 import org.wit.musicapp.adapters.SongAdapter
+import org.wit.musicapp.adapters.SongListener
 import org.wit.musicapp.databinding.ActivitySongListBinding
 import org.wit.musicapp.main.MainApp
+import org.wit.musicapp.models.SongModel
 
-class SongListActivity : AppCompatActivity() {
+class SongListActivity : AppCompatActivity(), SongListener {
 
     lateinit var app: MainApp
     private lateinit var binding: ActivitySongListBinding
@@ -27,7 +29,8 @@ class SongListActivity : AppCompatActivity() {
 
         val layoutManager = LinearLayoutManager(this)
         binding.recyclerView.layoutManager = layoutManager
-        binding.recyclerView.adapter = SongAdapter(app.songs)
+    //    binding.recyclerView.adapter = SongAdapter(app.songs)
+        binding.recyclerView.adapter = SongAdapter(app.songs.findAll(),this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -43,6 +46,12 @@ class SongListActivity : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    override fun onSongClick(song: SongModel) {
+        val launcherIntent = Intent(this, SongActivity::class.java)
+        launcherIntent.putExtra("song_edit", song)
+        startActivityForResult(launcherIntent,0)
     }
 
 }

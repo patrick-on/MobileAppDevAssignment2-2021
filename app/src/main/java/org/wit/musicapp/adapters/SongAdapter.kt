@@ -6,7 +6,13 @@ import androidx.recyclerview.widget.RecyclerView
 import org.wit.musicapp.databinding.CardSongBinding
 import org.wit.musicapp.models.SongModel
 
-class SongAdapter constructor(private var songs: List<SongModel>) :
+
+interface SongListener {
+    fun onSongClick(song: SongModel)
+}
+
+class SongAdapter constructor(private var songs: List<SongModel>,
+private val listener: SongListener) :
     RecyclerView.Adapter<SongAdapter.MainHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainHolder {
@@ -18,7 +24,7 @@ class SongAdapter constructor(private var songs: List<SongModel>) :
 
     override fun onBindViewHolder(holder: MainHolder, position: Int) {
         val song = songs[holder.adapterPosition]
-        holder.bind(song)
+        holder.bind(song, listener)
     }
 
     override fun getItemCount(): Int = songs.size
@@ -26,9 +32,10 @@ class SongAdapter constructor(private var songs: List<SongModel>) :
     class MainHolder(private val binding : CardSongBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(song: SongModel) {
+        fun bind(song: SongModel, listener: SongListener) {
             binding.songTitle.text = song.title
             binding.artist.text = song.artist
+            binding.root.setOnClickListener { listener.onSongClick(song)}
         }
     }
 }

@@ -5,4 +5,6 @@
     <string name="hint_songArtist">Artist </string>
     <string name="menu_addSong">Add</string>
     <string name="menu_cancelSong">Cancel</string>
+    <string name="enter_song_title"> Please enter a Song Title </string>
+    <string name="save_song"> Save Song </string>
 </resources>

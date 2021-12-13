@@ -9,40 +9,45 @@ import org.wit.musicapp.R
 import org.wit.musicapp.databinding.ActivitySongBinding
 import org.wit.musicapp.main.MainApp
 import org.wit.musicapp.models.SongModel
-import timber.log.Timber.i
+
 
 class SongActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivitySongBinding
     var song = SongModel()
-    lateinit var app : MainApp
+    lateinit var app: MainApp
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        var edit = false
         binding = ActivitySongBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         binding.toolbarAdd.title = title
         setSupportActionBar(binding.toolbarAdd)
-
         app = application as MainApp
-        i("Song Activity started...")
+
+        if (intent.hasExtra("song_edit")) {
+            edit = true
+            song = intent.extras?.getParcelable("song_edit")!!
+            binding.songTitle.setText(song.title)
+            binding.artist.setText(song.artist)
+            binding.btnAdd.setText(R.string.save_song)
+        }
+
         binding.btnAdd.setOnClickListener() {
             song.title = binding.songTitle.text.toString()
             song.artist = binding.artist.text.toString()
-            if (song.title.isNotEmpty()) {
-                app.songs.add(song.copy())
-                i("add Button Pressed: ${song}")
-                for (i in app.songs.indices) {
-                    { i("Song[$i]:${this.app.songs[i]}") }
-                }
-                setResult(RESULT_OK)
-                finish()
-            }
-            else {
-                Snackbar.make(it,"Please Enter a title", Snackbar.LENGTH_LONG)
+            if (song.title.isEmpty()) {
+                Snackbar.make(it,R.string.enter_song_title, Snackbar.LENGTH_LONG)
                     .show()
+            } else {
+                if (edit) {
+                    app.songs.update(song.copy())
+                } else {
+                    app.songs.create(song.copy())
+                }
             }
+            setResult(RESULT_OK)
+            finish()
         }
     }
 
