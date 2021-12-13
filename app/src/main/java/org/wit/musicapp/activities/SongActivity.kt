@@ -14,11 +14,14 @@ import org.wit.musicapp.R
 import org.wit.musicapp.databinding.ActivitySongBinding
 import org.wit.musicapp.helpers.showImagePicker
 import org.wit.musicapp.main.MainApp
+import org.wit.musicapp.models.Location
 import org.wit.musicapp.models.SongModel
 import timber.log.Timber.i
 
 
 class SongActivity : AppCompatActivity() {
+
+    private lateinit var mapIntentLauncher : ActivityResultLauncher<Intent>
     private lateinit var binding: ActivitySongBinding
     var song = SongModel()
     lateinit var app: MainApp
@@ -75,7 +78,20 @@ class SongActivity : AppCompatActivity() {
             showImagePicker(imageIntentLauncher)
         }
 
+        binding.songLocation.setOnClickListener {
+            val location = Location(52.245696, -7.139102, 15f)
+            if (song.zoom != 0f) {
+                location.lat =  song.lat
+                location.lng = song.lng
+                location.zoom = song.zoom
+            }
+            val launcherIntent = Intent(this, MapActivity::class.java)
+                .putExtra("location", location)
+            mapIntentLauncher.launch(launcherIntent)
+        }
+
         registerImagePickerCallback()
+        registerMapCallback()
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -105,6 +121,26 @@ class SongActivity : AppCompatActivity() {
                                 .load(song.image)
                                 .into(binding.albumImage)
                             binding.chooseImage.setText(R.string.change_album_image)
+                        } // end of if
+                    }
+                    RESULT_CANCELED -> { } else -> { }
+                }
+            }
+    }
+
+    private fun registerMapCallback() {
+        mapIntentLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult())
+            { result ->
+                when (result.resultCode) {
+                    RESULT_OK -> {
+                        if (result.data != null) {
+                            i("Got Location ${result.data.toString()}")
+                            val location = result.data!!.extras?.getParcelable<Location>("location")!!
+                            i("Location == $location")
+                            song.lat = location.lat
+                            song.lng = location.lng
+                            song.zoom = location.zoom
                         } // end of if
                     }
                     RESULT_CANCELED -> { } else -> { }

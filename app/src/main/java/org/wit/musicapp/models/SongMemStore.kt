@@ -28,6 +28,9 @@ class SongMemStore : SongStore {
             foundSong.title = song.title
             foundSong.artist = song.artist
             foundSong.image = song.image
+            foundSong.lat = song.lat
+            foundSong.lng = song.lng
+            foundSong.zoom = song.zoom
             logAll()
         }
     }
