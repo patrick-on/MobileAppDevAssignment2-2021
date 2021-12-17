@@ -59,7 +59,7 @@ class SongActivity : AppCompatActivity() {
         binding.btnAdd.setOnClickListener() {
             song.title = binding.songTitle.text.toString()
             song.artist = binding.artist.text.toString()
-            if (song.title.isEmpty()) {
+            if (song.title.isEmpty() or song.artist.isEmpty()) {
                 Snackbar.make(it,R.string.enter_song_title, Snackbar.LENGTH_LONG)
                     .show()
             } else {
@@ -67,11 +67,11 @@ class SongActivity : AppCompatActivity() {
                     app.songs.update(song.copy())
                 } else {
                     app.songs.create(song.copy())
+                    i("Song has been added: $song")
+                    setResult(RESULT_OK)
+                    finish()
                 }
             }
-            i("add Button Pressed: $song")
-            setResult(RESULT_OK)
-            finish()
         }
 
         binding.chooseImage.setOnClickListener {
@@ -79,7 +79,7 @@ class SongActivity : AppCompatActivity() {
         }
 
         binding.songLocation.setOnClickListener {
-            val location = Location(52.245696, -7.139102, 15f)
+            val location = Location(53.3352, -6.2285, 15f)
             if (song.zoom != 0f) {
                 location.lat =  song.lat
                 location.lng = song.lng
